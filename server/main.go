@@ -8,6 +8,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,7 @@ type Repository struct {
 
 func (r *Repository) SetupRoutes(e *echo.Echo) {
 	e.GET("/health", handlers.HealthCheck)
+	e.POST("/rpc", handlers.RPC)
 }
 
 func loadEnv() error {
@@ -29,6 +31,8 @@ func loadEnv() error {
 
 func main() {
 	e := echo.New()	
+	e.Use(middleware.CORS())
+
 	err := loadEnv()
 	if err != nil {
 		log.Fatal("could not load the env file")
