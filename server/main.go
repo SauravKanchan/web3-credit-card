@@ -1,7 +1,7 @@
 package main
 
 import (
-	"SauravKanchan/web3-credit-card/cmd/api/handlers"
+	"SauravKanchan/web3-credit-card/handlers"
 	"SauravKanchan/web3-credit-card/storage"
 	"fmt"
 	"log"
@@ -36,6 +36,11 @@ func main() {
 	db, err := storage.NewConnection()
 	if err != nil {
 		log.Fatal("could not load the database")
+	}
+	err = storage.Migrate(db)
+	// TODO: only migrate when migrate command is paased
+	if err != nil {
+		log.Fatal("could not migrate the database", err)
 	}
 	r := Repository{
 		DB: db,

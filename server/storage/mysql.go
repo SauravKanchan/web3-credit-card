@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"SauravKanchan/web3-credit-card/models"
 	"fmt"
 	"os"
 
@@ -23,4 +24,13 @@ func NewConnection() (*gorm.DB, error) {
 
 
 	return db, nil
+}
+
+func Migrate(db *gorm.DB) error {
+	fmt.Println("Migrating the schema...")
+	err := models.MigrateUsers(db)
+	if err != nil {
+		return fmt.Errorf("error migrating users: %w", err)
+	}
+	return nil
 }
