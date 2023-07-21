@@ -2,12 +2,44 @@ package main
 
 import (
 	"SauravKanchan/web3-credit-card/cmd/api/handlers"
+	"SauravKanchan/web3-credit-card/storage"
+	"fmt"
+	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"gorm.io/gorm"
 )
+
+type Repository struct {
+	DB *gorm.DB
+}
+
+func (r *Repository) SetupRoutes(e *echo.Echo) {
+	e.GET("/health", handlers.HealthCheck)
+}
+
+func loadEnv() error {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		return fmt.Errorf("unable to load env file: %w", err)
+	}
+	return nil
+}
 
 func main() {
 	e := echo.New()	
-	e.GET("/health", handlers.HealthCheck)
+	err := loadEnv()
+	if err != nil {
+		log.Fatal("could not load the env file")
+	}
+	db, err := storage.NewConnection()
+	if err != nil {
+		log.Fatal("could not load the database")
+	}
+	r := Repository{
+		DB: db,
+	}
+	r.SetupRoutes(e)
 	e.Logger.Fatal(e.Start(":8080"))
 }
