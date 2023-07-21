@@ -50,5 +50,5 @@ func main() {
 		DB: db,
 	}
 	r.SetupRoutes(e)
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":9010"))
 }
