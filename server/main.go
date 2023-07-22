@@ -16,9 +16,13 @@ type Repository struct {
 	DB *gorm.DB
 }
 
+
+
 func (r *Repository) SetupRoutes(e *echo.Echo) {
 	e.GET("/health", handlers.HealthCheck)
 	e.POST("/rpc", handlers.RPC)
+	e.POST("/submit-transaction", r.SubmitTransaction)
+
 }
 
 func loadEnv() error {
@@ -49,6 +53,13 @@ func main() {
 	r := Repository{
 		DB: db,
 	}
+	// setup r in echo context
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("repository", &r)
+			return next(c)
+		}
+	})
 	r.SetupRoutes(e)
 	e.Logger.Fatal(e.Start(":9010"))
 }

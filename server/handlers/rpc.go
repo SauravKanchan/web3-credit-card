@@ -82,14 +82,13 @@ func RPC(c echo.Context) error {
 	}
 
 	// compare the to address with the token address in case insensitive manner
-	if strings.ToLower(to) == strings.ToLower(config.TOKEN_ADDRESS) {
+	if strings.EqualFold(to,config.TOKEN_ADDRESS) {
 		// return 1000 tokens as balance
 		fmt.Println("returning custom response payload")
 		responsePayload := make(map[string]interface{})
 		responsePayload["jsonrpc"] = "2.0"
 		responsePayload["id"] = requestPayload.ID
 		responsePayload["result"] = "0x3e8"
-		// format response result as 64 long hex string
 		responsePayload["result"] = fmt.Sprintf("0x%064s", strings.TrimPrefix(responsePayload["result"].(string), "0x"))
 		return c.JSON(http.StatusOK, responsePayload)
 	}

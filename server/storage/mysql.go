@@ -32,5 +32,9 @@ func Migrate(db *gorm.DB) error {
 	if err != nil {
 		return fmt.Errorf("error migrating users: %w", err)
 	}
+	err = models.MigrateTransactions(db)
+	if err != nil {
+		return fmt.Errorf("error migrating transactions: %w", err)
+	}
 	return nil
 }
