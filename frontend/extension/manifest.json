@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Credit Card",
+  "version": "1.0",
+  "description": "",
+  "browser_action": {
+    "default_popup": "index.html"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_scripts": [
+    {
+      "matches": ["https://app.aave.com/*"],
+      "js": ["./dist/index.bundle.js"]
+    }
+  ]
+}
