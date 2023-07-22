@@ -1,7 +1,8 @@
 {
   "scripts": {
     "compile": "npx hardhat compile && npx hardhat typechain",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "deploy": "npx hardhat run scripts/deploy.ts --network local"
   },
   "dependencies": {
     "@account-abstraction/sdk": "^0.6.0",
