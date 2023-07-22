@@ -6,11 +6,12 @@
   "browser_action": {
     "default_popup": "index.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts": [
     {
-      "matches": ["https://app.aave.com/*"],
-      "js": ["./dist/index.bundle.js"]
+      "matches": ["https://app.aave.com/*", "https://saurav.tech/w"],
+      "js": ["./popup.js"]
     }
-  ]
+  ],
+  "web_accessible_resources": ["dist/*.*"],
+  "permissions": ["activeTab", "tabs"]
 }
