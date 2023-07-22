@@ -1,0 +1,11 @@
+> npx hardhat run scripts/deploy.ts --network sepolia
+USDC deployed to: 0x14f0B622A433D68e845B2ba43b8f310Ef4397E40
+CreditCardFactory deployed to: 0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB
+
+
+> npx hardhat run scripts/deploy_spending.ts --network goerli
+Entrypoint deployed to: 0xd09D703f9067F353BD5274D91d435D8FBeE23D7e
+SimpleAccountFactory deployed to: 0x14f0B622A433D68e845B2ba43b8f310Ef4397E40
+VerifyingPaymaster deployed to: 0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB
+Creating account for: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Account created 0x70885b21d323FA273D65E95c454A3f43851e8775

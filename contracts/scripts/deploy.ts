@@ -16,6 +16,7 @@ async function main() {
   await creditCardFactory.deployed();
   console.log("CreditCardFactory deployed to:", creditCardFactory.address);
 
+  // create a credit card from the factory
 }
 
 main()
