@@ -13,6 +13,15 @@ const config: HardhatUserConfig = {
         "0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6",
       ],
     },
+    local2: {
+      chainId: 1234,
+      url: "http://localhost:1234",
+      accounts: [
+        "0x170370af7672a8901c04a6be62dc86941ca51b02f834c50af41c6781966900a3",
+        "0xe31eb95367b5d8809bd59db5bfcb4412e73ba14bd28ca1c53f20b09d4ac74b97",
+        "0x974704a7996632a3737f12694ddf27284f11ddadcb350758ae704586419121d2",
+      ],
+    },
   },
 
   solidity: {
