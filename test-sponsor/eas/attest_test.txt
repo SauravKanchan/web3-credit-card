@@ -1,0 +1,34 @@
+{
+  domain: {
+    name: 'EAS Attestation',
+    version: '0.26',
+    chainId: 11155111,
+    verifyingContract: '0xC2679fBD37d54388Ce493F1DB75320D236e1815e'
+  },
+  primaryType: 'Attestation',
+  message: {
+    recipient: '0xA9E78cef5e6c0081b68AdA2554c04198DfF17C69',
+    expirationTime: 0,
+    time: 1689995364,
+    revocable: false,
+    nonce: 0,
+    schema: '0x600a6c6e521d0f7a4443e87f60da0f28f6f5dc1abbecdeb5876d5a5b76e193ed',
+    refUID: '0x0000000000000000000000000000000000000000000000000000000000000000',
+    data: '0x000000000000000000000000bd92a7c9bf0ae4caae3978f9177a696fe7ea179f00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
+    version: 0
+  },
+  types: {
+    Attest: [
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object],
+      [Object]
+    ]
+  },
+  signature: {
+    v: 28,
+    r: '0xce7a055dbab64ba827f1bf1aca2413266a1d97e994f7c1051f5b8a965c1647e9',
+    s: '0x0e1e7b00a73c0249f70377d09a043f2df62db47562ba9435285cd129fdfaeb50'
+  },
+  uid: '0x1861a2b3c9d997f37ee111578ad73ebeab1de7b725f52c550117607f4f32fd32'
+}
