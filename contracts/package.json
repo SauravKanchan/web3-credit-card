@@ -1,0 +1,19 @@
+{
+  "scripts": {
+    "compile": "npx hardhat compile && npx hardhat typechain",
+    "test": "npx hardhat test"
+  },
+  "dependencies": {
+    "@account-abstraction/sdk": "^0.6.0",
+    "@gnosis.pm/safe-contracts": "^1.3.0",
+    "@openzeppelin/contracts": "^4.9.2",
+    "@uniswap/v3-periphery": "^1.4.3",
+    "ethers": "5.7",
+    "hardhat": "^2.13.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "prettier": "^3.0.0",
+    "prettier-plugin-solidity": "^1.1.3"
+  }
+}
