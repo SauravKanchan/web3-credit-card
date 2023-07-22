@@ -10,6 +10,12 @@ async function main() {
   await usdc.deployed();
   console.log("USDC deployed to:", usdc.address);
 
+  // deploy credit card factory contract
+  const creditCardFactoryFactory = await ethers.getContractFactory("CreditCardFactory");
+  const creditCardFactory = await creditCardFactoryFactory.deploy(usdc.address);
+  await creditCardFactory.deployed();
+  console.log("CreditCardFactory deployed to:", creditCardFactory.address);
+
 }
 
 main()
