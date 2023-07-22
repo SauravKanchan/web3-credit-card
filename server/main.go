@@ -20,7 +20,7 @@ type Repository struct {
 
 func (r *Repository) SetupRoutes(e *echo.Echo) {
 	e.GET("/health", handlers.HealthCheck)
-	e.POST("/rpc", handlers.RPC)
+	e.POST("/rpc", r.RPC)
 	e.POST("/submit-transaction", r.SubmitTransaction)
 
 }

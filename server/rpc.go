@@ -1,7 +1,8 @@
-package handlers
+package main
 
 import (
 	"SauravKanchan/web3-credit-card/config"
+	"SauravKanchan/web3-credit-card/models"
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
@@ -13,6 +14,7 @@ import (
 	"os"
 	"strings"
 
+	// "github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/labstack/echo/v4"
 )
 
@@ -41,9 +43,9 @@ type Param struct {
 
 
 
-func RPC(c echo.Context) error {
+func (r *Repository) RPC(c echo.Context) error {
 	// whatever request we get just formward it to the rpc server
-	r := c.Request()
+	req := c.Request()
 	// make a request to the rpc server
 	rpc_url := os.Getenv("RPC_ENDPOINT")
 	// convert the above rpc url to url.URL
@@ -59,7 +61,7 @@ func RPC(c echo.Context) error {
 	}
 
 	requestPayload := JSONData{}
-	err = json.NewDecoder(r.Body).Decode(&requestPayload)
+	err = json.NewDecoder(req.Body).Decode(&requestPayload)
 	if err != nil {
 		fmt.Println("error decoding request payload aaaa", err)
 		return c.String(http.StatusInternalServerError, "error decoding request payload")
@@ -84,18 +86,34 @@ func RPC(c echo.Context) error {
 	// compare the to address with the token address in case insensitive manner
 	if strings.EqualFold(to,config.TOKEN_ADDRESS) {
 		// return 1000 tokens as balance
-		fmt.Println("returning custom response payload")
 		responsePayload := make(map[string]interface{})
 		responsePayload["jsonrpc"] = "2.0"
 		responsePayload["id"] = requestPayload.ID
-		responsePayload["result"] = "0x3e8"
-		responsePayload["result"] = fmt.Sprintf("0x%064s", strings.TrimPrefix(responsePayload["result"].(string), "0x"))
-		return c.JSON(http.StatusOK, responsePayload)
+
+		// parse data from request payload, its a erc20 token call
+		// var erc20_abi abi.ABI
+		// erc20_abi, err = abi.JSON(strings.NewReader(config.ERC20_ABI))
+		function_signature := requestPayload.Params[0].(map[string]interface{})["data"].(string)[:10]
+		// if function signature is balanceOf
+		if strings.EqualFold(function_signature, "0x70a08231") {
+			// get the address from the data
+			address := requestPayload.Params[0].(map[string]interface{})["data"].(string)[34:]
+
+			user, err := models.GetUser(r.DB, address)
+			if err != nil {
+				fmt.Println("error fetching user from db", err)
+				return c.String(http.StatusInternalServerError, "error fetching user from db")
+			}
+			responsePayload["result"] = fmt.Sprintf("0x%064s", strings.TrimPrefix(fmt.Sprintf("%x", int(user.Balance)), "0x"))
+			return c.JSON(http.StatusOK, responsePayload)
+		}
+
+		
 	}
 	request := &http.Request{
-		Method: r.Method,
+		Method: req.Method,
 		URL:    rpc,
-		Header: r.Header,
+		Header: req.Header,
 		Body:   ioutil.NopCloser(bytes.NewBuffer(requestPayloadBytes)),
 	}
 
