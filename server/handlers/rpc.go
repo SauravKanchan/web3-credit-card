@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -25,6 +26,19 @@ func gzipResponse(data []byte, w io.Writer) error {
 	fmt.Println("gzip encoded response sent")
 	return nil
 }
+
+type JSONData struct {
+	Method  string   `json:"method"`
+	Params  []interface{} `json:"params"`
+	ID      int      `json:"id"`
+	JSONRPC string   `json:"jsonrpc"`
+}
+
+type Param struct {
+	To   string `json:"to"`
+	Data string `json:"data"`
+}
+
 
 
 func RPC(c echo.Context) error {
@@ -44,21 +58,40 @@ func RPC(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "error parsing rpc url")
 	}
 
-	requestPayload := make(map[string]interface{})
+	requestPayload := JSONData{}
 	err = json.NewDecoder(r.Body).Decode(&requestPayload)
 	if err != nil {
-		fmt.Println("error decoding request payload", err)
+		fmt.Println("error decoding request payload aaaa", err)
 		return c.String(http.StatusInternalServerError, "error decoding request payload")
 	}
 	fmt.Println("request payload", requestPayload)
 	// convert requestPayload to bytes buffer
 	requestPayloadBytes, err := json.Marshal(requestPayload)
 	if err != nil {
-		fmt.Println("error marshalling request payload", err)
+		fmt.Println("error marshalling request payload asdf", err)
 		return c.String(http.StatusInternalServerError, "error marshalling request payload")
 	}
-	if requestPayload["to"] == config.TOKEN_ADDRESS {
-		// parse data field
+	var to string;
+	if len(requestPayload.Params) > 0 {
+		// We expect the first parameter to be a map[string]interface{}
+		if paramsMap, ok := requestPayload.Params[0].(map[string]interface{}); ok {
+			to = paramsMap["to"].(string)
+		} else {
+			fmt.Println("Invalid format for 'params' array")
+		}
+	}
+
+	// compare the to address with the token address in case insensitive manner
+	if strings.ToLower(to) == strings.ToLower(config.TOKEN_ADDRESS) {
+		// return 1000 tokens as balance
+		fmt.Println("returning custom response payload")
+		responsePayload := make(map[string]interface{})
+		responsePayload["jsonrpc"] = "2.0"
+		responsePayload["id"] = requestPayload.ID
+		responsePayload["result"] = "0x3e8"
+		// format response result as 64 long hex string
+		responsePayload["result"] = fmt.Sprintf("0x%064s", strings.TrimPrefix(responsePayload["result"].(string), "0x"))
+		return c.JSON(http.StatusOK, responsePayload)
 	}
 	request := &http.Request{
 		Method: r.Method,
@@ -102,7 +135,6 @@ func RPC(c echo.Context) error {
 			fmt.Println("error decoding response from rpc server", err)
 			c.String(http.StatusInternalServerError, "error decoding response from rpc server")
 		}
-		fmt.Println("response from rpc server", bodyMap)
 		return c.JSON(resp.StatusCode, bodyMap)
     }
 }

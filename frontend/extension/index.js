@@ -1,5 +1,5 @@
 import { AuthProvider } from "@arcana/auth";
-let localAppAddress = "xar_test_89138bc25e7a62763351f0bac74751157d423db3";
+let localAppAddress = "89138bc25e7a62763351f0bac74751157d423db3";
 const auth = new AuthProvider(localAppAddress, {
   network: {
     authUrl: "http://localhost:8080",
@@ -18,8 +18,8 @@ const auth = new AuthProvider(localAppAddress, {
 
 (async () => {
   console.log("init form extension");
+  window.auth = auth;
   await auth.init();
-  await auth.loginWithSocial("google");
   let provider = await auth.loginWithSocial("google");
   window.ethereum = provider;
   window.ethereum.enable = async function () {
