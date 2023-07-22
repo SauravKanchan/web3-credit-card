@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"SauravKanchan/web3-credit-card/config"
+	"bytes"
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -40,11 +43,28 @@ func RPC(c echo.Context) error {
 		fmt.Println("error parsing rpc url", err)
 		return c.String(http.StatusInternalServerError, "error parsing rpc url")
 	}
+
+	requestPayload := make(map[string]interface{})
+	err = json.NewDecoder(r.Body).Decode(&requestPayload)
+	if err != nil {
+		fmt.Println("error decoding request payload", err)
+		return c.String(http.StatusInternalServerError, "error decoding request payload")
+	}
+	fmt.Println("request payload", requestPayload)
+	// convert requestPayload to bytes buffer
+	requestPayloadBytes, err := json.Marshal(requestPayload)
+	if err != nil {
+		fmt.Println("error marshalling request payload", err)
+		return c.String(http.StatusInternalServerError, "error marshalling request payload")
+	}
+	if requestPayload["to"] == config.TOKEN_ADDRESS {
+		// parse data field
+	}
 	request := &http.Request{
 		Method: r.Method,
 		URL:    rpc,
 		Header: r.Header,
-		Body:   r.Body,
+		Body:   ioutil.NopCloser(bytes.NewBuffer(requestPayloadBytes)),
 	}
 
 	client := &http.Client{}
@@ -56,24 +76,19 @@ func RPC(c echo.Context) error {
 
 	defer resp.Body.Close()
 	var body []byte
+
+
+
 	if resp.Header.Get("Content-Encoding") == "gzip" {
-		//print response payload
-		var payload map[string]interface{}
-		c.Bind(&payload)
-		fmt.Println("response is gzip encoded", payload)
         reader, err := gzip.NewReader(resp.Body)
         if err != nil {
             panic(err)
         }
         defer reader.Close()
-        // Read the decompressed response body
         body, err = io.ReadAll(reader)
         if err != nil {
             panic(err)
         }
-		// write the body to gzip writer
-		// return gzip encoded response
-
 		return gzipResponse(body, c.Response().Writer)
     } else {
         // The response is not gzip encoded, so read it directly
@@ -87,9 +102,7 @@ func RPC(c echo.Context) error {
 			fmt.Println("error decoding response from rpc server", err)
 			c.String(http.StatusInternalServerError, "error decoding response from rpc server")
 		}
-
 		fmt.Println("response from rpc server", bodyMap)
 		return c.JSON(resp.StatusCode, bodyMap)
     }
-	return c.JSON(resp.StatusCode, body)
 }

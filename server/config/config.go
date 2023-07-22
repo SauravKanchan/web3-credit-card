@@ -1,0 +1,3 @@
+package config
+
+const TOKEN_ADDRESS = "0x51fCe89b9f6D4c530698f181167043e1bB4abf89"

@@ -4,7 +4,7 @@ const auth = new AuthProvider(localAppAddress, {
   network: {
     authUrl: "http://localhost:8080",
     walletUrl: "http://localhost:3000",
-    // gatewayUrl: "https://gateway-dev.arcana.network",
+    gatewayUrl: "https://gateway001-testnet.arcana.network",
   },
   /*chainConfig: {
      chainId: 80001,
@@ -17,8 +17,20 @@ const auth = new AuthProvider(localAppAddress, {
 });
 
 (async () => {
-  let provider = await auth.init();
+  console.log("init form extension");
+  await auth.init();
   await auth.loginWithSocial("google");
-  await auth.isLoggedIn();
+  let provider = await auth.loginWithSocial("google");
   window.ethereum = provider;
+  window.ethereum.enable = async function () {
+    await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+  };
+  window.ethereum.send = async function (method, params) {
+    return await window.ethereum.request({
+      method: method,
+      params: params,
+    });
+  };
 })();
