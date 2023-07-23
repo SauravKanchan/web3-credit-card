@@ -40,7 +40,8 @@ contract Escrow is Ownable {
     function execute_transaction(UserOperation memory _ops) public onlyOwner() {
         UserOperation[] memory ops = new UserOperation[](1);
         ops[0] = _ops; 
-        (,,uint256 _amount) = decode(_ops.callData);
+        (bytes4 selector,,uint256 _amount) = decode(_ops.callData);
+        // if selector is approve then only transfer the amount
         bills[_ops.sender] = Bill(epoch, _amount);
         token.transfer(_ops.sender, _amount);
         entrypoint.handleOps(ops, payable(msg.sender));

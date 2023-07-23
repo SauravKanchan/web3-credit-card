@@ -41,21 +41,30 @@ async function main() {
     0
   );
   await tx.wait();
-  console.log("Account created", await simpleAccountFactory.getAddress(await accounts[1].getAddress(), 0));
+  console.log(
+    "Account created",
+    await simpleAccountFactory.getAddress(await accounts[1].getAddress(), 0)
+  );
 
-  //   // deploy usdc contract
-  //   const usdcFactory = await ethers.getContractFactory("USDC");
-  //   const usdc = await usdcFactory.deploy(totalSupply);
-  //   await usdc.deployed();
-  //   console.log("USDC deployed to:", usdc.address);
+  // deploy usdc contract
+  const usdcFactory = await ethers.getContractFactory("USDC");
+  const usdc = await usdcFactory.deploy(totalSupply);
+  await usdc.deployed();
+  console.log("USDC deployed to:", usdc.address);
+
+  // deploy escrow contract
+  const escrowFactory = await ethers.getContractFactory("Escrow");
+  const escrow = await escrowFactory.deploy(entrypoint.address, usdc.address);
+  await escrow.deployed();
+  console.log("Escrow deployed to:", escrow.address);
 
   // send usdc to escrow contract
-  //   let tx = await usdc.transfer(
-  //     verifyingPaymaster.address,
-  //     ethers.utils.parseEther("10000000")
-  //   );
-  //   await tx.wait();
-  //   console.log("USDC sent to VerifyingPaymaster");
+  let tx2 = await usdc.transfer(
+    escrow.address,
+    ethers.utils.parseEther("10000000")
+  );
+  await tx2.wait();
+  console.log("USDC sent to VerifyingPaymaster");
 }
 
 main();
