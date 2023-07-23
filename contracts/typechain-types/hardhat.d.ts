@@ -401,6 +401,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Escrow__factory>;
     getContractFactory(
+      name: "IMessageRecipient",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IMessageRecipient__factory>;
+    getContractFactory(
+      name: "Mailbox",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Mailbox__factory>;
+    getContractFactory(
       name: "IEscrow",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IEscrow__factory>;
@@ -902,6 +910,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Escrow>;
+    getContractAt(
+      name: "IMessageRecipient",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IMessageRecipient>;
+    getContractAt(
+      name: "Mailbox",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Mailbox>;
     getContractAt(
       name: "IEscrow",
       address: string,

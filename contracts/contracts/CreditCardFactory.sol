@@ -3,33 +3,8 @@ pragma solidity ^0.8.18;
 import "./MultiSigWallet.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./USDC.sol";
-import "./interfaces/IMessageRecipient.sol";
 import "hardhat/console.sol";
-
-// interface Mailbox {
-//     function dispatch(
-//         uint32 _destination,
-//         bytes32 _recipient,
-//         bytes calldata _body
-//     ) external returns (bytes32);
-// }
-
-
-// interface IMessageRecipient {
-//     /**
-//      * @notice Handle an interchain message
-//      * @param _origin Domain ID of the chain from which the message came
-//      * @param _sender Address of the message sender on the origin chain as bytes32
-//      * @param _body Raw bytes content of message body
-//      */
-//     function handle(
-//         uint32 _origin,
-//         bytes32 _sender,
-//         bytes calldata _body
-//     ) external;
-// }
-
-
+import {IMessageRecipient, Mailbox} from "./interfaces/Hyperlane.sol";
 
 contract CreditCardFactory is Ownable {
     event CreditCardCreated(address indexed creditCard, address indexed owner);
@@ -114,40 +89,39 @@ contract CreditCardFactory is Ownable {
         bill.amount = 0;
     }
 
-    // function addressToBytes32(address _addr) internal pure returns (bytes32) {
-    //     return bytes32(uint256(uint160(_addr)));
-    // }
+    function addressToBytes32(address _addr) internal pure returns (bytes32) {
+        return bytes32(uint256(uint160(_addr)));
+    }
 
-    // function trustLessWithdraw(uint _tx_index) public onlyOwner {
-    //     bytes memory data = abi.encode(msg.sender, _tx_index);
-    //     Mailbox(MailboxAddress).dispatch(MAILBOX_ID, addressToBytes32(), data);
-    // }
+    function trustLessWithdraw(uint _tx_index) public onlyOwner {
+        bytes memory data = abi.encode(msg.sender, _tx_index);
+        Mailbox(MailboxAddress).dispatch(MAILBOX_ID, addressToBytes32(EscrowAddress), data);
+    }
 
-    // modifier onlyMailbox() {
-    // require(msg.sender == mailbox);
-    //     _;    
-    // }
+    modifier onlyMailbox() {
+        require(msg.sender == MailboxAddress);
+        _;    
+    }
 
-    // function bytes32ToAddress(bytes32 _buf) internal pure returns (address) {
-    //     return address(uint160(uint256(_buf)));
-    // }
+    function bytes32ToAddress(bytes32 _buf) internal pure returns (address) {
+        return address(uint160(uint256(_buf)));
+    }
 
-    // function handle(
-    //     uint32 _origin,
-    //     bytes32 _sender,
-    //     bytes calldata _body
-    // ) external override onlyMailbox {
-    //     require(bytes32ToAddress(_sender) == EscrowAddress, "Invalid sender");
-    //     (address owner,uint value, uint tx_index) = abi.decode(_body, (address,uint));
-    //     // if value is 0 then return the amount to the sender
-    //     Bill storage bill = bills[owner];
-    //     // if value is equal to paid amount then confirm the transaction
-    //     if (value == bill.paidamount) {
-    //         MultiSigWallet creditCard = MultiSigWallet(payable(creditCards[owner]));
-    //         creditCard.confirmTransaction(tx_index);
-    //         require(creditCard.getTransactionStatus(tx_index), "Transaction failed");
-    //         bill.paidamount = value;
-    //     }
-    //     require(success, "tx failed");
-    // }
+    function handle(
+        uint32 _origin,
+        bytes32 _sender,
+        bytes calldata _body
+    ) external onlyMailbox {
+        require(bytes32ToAddress(_sender) == EscrowAddress, "Invalid sender");
+        (address owner,uint value, uint tx_index) = abi.decode(_body, (address,uint, uint));
+        // if value is 0 then return the amount to the sender
+        Bill storage bill = bills[owner];
+        // if value is equal to paid amount then confirm the transaction
+        if (value == bill.paidamount) {
+            MultiSigWallet creditCard = MultiSigWallet(payable(creditCards[owner]));
+            creditCard.confirmTransaction(tx_index);
+            require(creditCard.getTransactionStatus(tx_index), "Transaction failed");
+            bill.paidamount = value;
+        }
+    }
 }

@@ -34,6 +34,7 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     "creditCards(address)": FunctionFragment;
     "epoch()": FunctionFragment;
     "getCreditCard()": FunctionFragment;
+    "handle(uint32,bytes32,bytes)": FunctionFragment;
     "increaseEpoch()": FunctionFragment;
     "isCreditCard(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -42,6 +43,7 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     "renounceOwnership()": FunctionFragment;
     "token()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "trustLessWithdraw(uint256)": FunctionFragment;
     "withdraw(uint256)": FunctionFragment;
   };
 
@@ -52,6 +54,7 @@ export interface CreditCardFactoryInterface extends utils.Interface {
       | "creditCards"
       | "epoch"
       | "getCreditCard"
+      | "handle"
       | "increaseEpoch"
       | "isCreditCard"
       | "owner"
@@ -60,6 +63,7 @@ export interface CreditCardFactoryInterface extends utils.Interface {
       | "renounceOwnership"
       | "token"
       | "transferOwnership"
+      | "trustLessWithdraw"
       | "withdraw"
   ): FunctionFragment;
 
@@ -79,6 +83,14 @@ export interface CreditCardFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getCreditCard",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "handle",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "increaseEpoch",
@@ -107,6 +119,10 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "trustLessWithdraw",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "withdraw",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -125,6 +141,7 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     functionFragment: "getCreditCard",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "handle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseEpoch",
     data: BytesLike
@@ -143,6 +160,10 @@ export interface CreditCardFactoryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "token", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "trustLessWithdraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
@@ -232,6 +253,13 @@ export interface CreditCardFactory extends BaseContract {
 
     getCreditCard(overrides?: CallOverrides): Promise<[string]>;
 
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -262,6 +290,11 @@ export interface CreditCardFactory extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    trustLessWithdraw(
+      _tx_index: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -296,6 +329,13 @@ export interface CreditCardFactory extends BaseContract {
 
   getCreditCard(overrides?: CallOverrides): Promise<string>;
 
+  handle(
+    _origin: PromiseOrValue<BigNumberish>,
+    _sender: PromiseOrValue<BytesLike>,
+    _body: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   increaseEpoch(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -326,6 +366,11 @@ export interface CreditCardFactory extends BaseContract {
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  trustLessWithdraw(
+    _tx_index: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -360,6 +405,13 @@ export interface CreditCardFactory extends BaseContract {
 
     getCreditCard(overrides?: CallOverrides): Promise<string>;
 
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     increaseEpoch(overrides?: CallOverrides): Promise<void>;
 
     isCreditCard(
@@ -386,6 +438,11 @@ export interface CreditCardFactory extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    trustLessWithdraw(
+      _tx_index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -435,6 +492,13 @@ export interface CreditCardFactory extends BaseContract {
 
     getCreditCard(overrides?: CallOverrides): Promise<BigNumber>;
 
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -468,6 +532,11 @@ export interface CreditCardFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    trustLessWithdraw(
+      _tx_index: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     withdraw(
       _tx_index: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -493,6 +562,13 @@ export interface CreditCardFactory extends BaseContract {
     epoch(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getCreditCard(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -524,6 +600,11 @@ export interface CreditCardFactory extends BaseContract {
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    trustLessWithdraw(
+      _tx_index: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

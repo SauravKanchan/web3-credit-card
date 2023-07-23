@@ -6,37 +6,15 @@ import "./EIP4337/interfaces/IEntryPoint.sol";
 import "./EIP4337/interfaces/UserOperation.sol";
 import "./USDC.sol";
 import "hardhat/console.sol";
+import { Mailbox} from "./interfaces/Hyperlane.sol";
 
-
-// interface Mailbox {
-//     function dispatch(
-//         uint32 _destination,
-//         bytes32 _recipient,
-//         bytes calldata _body
-//     ) external returns (bytes32);
-// }
-
-
-// interface IMessageRecipient {
-//     /**
-//      * @notice Handle an interchain message
-//      * @param _origin Domain ID of the chain from which the message came
-//      * @param _sender Address of the message sender on the origin chain as bytes32
-//      * @param _body Raw bytes content of message body
-//      */
-//     function handle(
-//         uint32 _origin,
-//         bytes32 _sender,
-//         bytes calldata _body
-//     ) external;
-// }
 
 contract Escrow is Ownable {
     mapping(address => Bill) public bills;
     IEntryPoint public entrypoint;
     USDC public token;
     address constant MailboxAddress = 0xCC737a94FecaeC165AbCf12dED095BB13F037685;
-    // uint256 constant MailboxId = 11155111;
+    uint32 constant MailboxId = 11155111;
     address constant creditCardFactory = 0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB;
 
     struct Bill {
@@ -74,19 +52,24 @@ contract Escrow is Ownable {
         entrypoint.handleOps(ops, payable(msg.sender));
     }
 
-    // function bytes32ToAddress(bytes32 _buf) internal pure returns (address) {
-    //     return address(uint160(uint256(_buf)));
-    // }
+    // alignment preserving cast
+    function addressToBytes32(address _addr) internal pure returns (bytes32) {
+        return bytes32(uint256(uint160(_addr)));
+    }
 
-    // function handle(
-    //     uint32 _origin,
-    //     bytes32 _sender,
-    //     bytes calldata _body
-    // ) external override {
-    //     require(msg.sender == MailboxAddress, "only mailbox can call");
-    //     require(bytes32ToAddress(_sender) == address(creditCardFactory), "only credit card factory can call");
-    //     (address user, uint256 tx_index) = decode(_body);
-    //     body = abi.encode(user, bills[user].amount, tx_index);
-    //     Mailbox(MailboxAddress).dispatch(MAILBOX_ID, bytes32(creditCardFactory), _body);
-    // }
+    function bytes32ToAddress(bytes32 _buf) internal pure returns (address) {
+        return address(uint160(uint256(_buf)));
+    }
+
+    function handle(
+        uint32 _origin,
+        bytes32 _sender,
+        bytes calldata _body
+    ) external {
+        require(msg.sender == MailboxAddress, "only mailbox can call");
+        require(bytes32ToAddress(_sender) == address(creditCardFactory), "only credit card factory can call");
+        (address user, uint256 tx_index) = abi.decode(_body, (address,uint256));
+        bytes memory body = abi.encode(user, bills[user].amount, tx_index);
+        Mailbox(MailboxAddress).dispatch(MailboxId, addressToBytes32(creditCardFactory), _body);
+    }
 }

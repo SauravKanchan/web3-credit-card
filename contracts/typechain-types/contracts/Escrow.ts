@@ -73,6 +73,7 @@ export interface EscrowInterface extends utils.Interface {
     "entrypoint()": FunctionFragment;
     "epoch()": FunctionFragment;
     "execute_transaction((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes))": FunctionFragment;
+    "handle(uint32,bytes32,bytes)": FunctionFragment;
     "increaseEpoch()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -86,6 +87,7 @@ export interface EscrowInterface extends utils.Interface {
       | "entrypoint"
       | "epoch"
       | "execute_transaction"
+      | "handle"
       | "increaseEpoch"
       | "owner"
       | "renounceOwnership"
@@ -105,6 +107,14 @@ export interface EscrowInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "execute_transaction",
     values: [UserOperationStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "handle",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "increaseEpoch",
@@ -128,6 +138,7 @@ export interface EscrowInterface extends utils.Interface {
     functionFragment: "execute_transaction",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "handle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseEpoch",
     data: BytesLike
@@ -205,6 +216,13 @@ export interface Escrow extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -234,6 +252,13 @@ export interface Escrow extends BaseContract {
 
   execute_transaction(
     _ops: UserOperationStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  handle(
+    _origin: PromiseOrValue<BigNumberish>,
+    _sender: PromiseOrValue<BytesLike>,
+    _body: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -268,6 +293,13 @@ export interface Escrow extends BaseContract {
 
     execute_transaction(
       _ops: UserOperationStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -311,6 +343,13 @@ export interface Escrow extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -341,6 +380,13 @@ export interface Escrow extends BaseContract {
 
     execute_transaction(
       _ops: UserOperationStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    handle(
+      _origin: PromiseOrValue<BigNumberish>,
+      _sender: PromiseOrValue<BytesLike>,
+      _body: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

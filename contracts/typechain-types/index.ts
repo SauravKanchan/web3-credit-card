@@ -200,10 +200,12 @@ export type { TestWrappedNativeToken } from "./contracts/EIP4337/test/TestWrappe
 export { TestWrappedNativeToken__factory } from "./factories/contracts/EIP4337/test/TestWrappedNativeToken__factory";
 export type { Escrow } from "./contracts/Escrow";
 export { Escrow__factory } from "./factories/contracts/Escrow__factory";
+export type { IMessageRecipient } from "./contracts/interfaces/Hyperlane.sol/IMessageRecipient";
+export { IMessageRecipient__factory } from "./factories/contracts/interfaces/Hyperlane.sol/IMessageRecipient__factory";
+export type { Mailbox } from "./contracts/interfaces/Hyperlane.sol/Mailbox";
+export { Mailbox__factory } from "./factories/contracts/interfaces/Hyperlane.sol/Mailbox__factory";
 export type { IEscrow } from "./contracts/interfaces/IEscrow";
 export { IEscrow__factory } from "./factories/contracts/interfaces/IEscrow__factory";
-export type { IMessageRecipient } from "./contracts/interfaces/IMessageRecipient";
-export { IMessageRecipient__factory } from "./factories/contracts/interfaces/IMessageRecipient__factory";
 export type { MultiSigWallet } from "./contracts/MultiSigWallet";
 export { MultiSigWallet__factory } from "./factories/contracts/MultiSigWallet__factory";
 export type { USDC } from "./contracts/USDC";

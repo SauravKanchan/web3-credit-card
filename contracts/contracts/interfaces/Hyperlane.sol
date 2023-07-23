@@ -1,5 +1,13 @@
-// SPDX-License-Identifier: MIT OR Apache-2.0
-pragma solidity >=0.6.11;
+pragma solidity ^0.8.18;
+
+interface Mailbox {
+    function dispatch(
+        uint32 _destination,
+        bytes32 _recipient,
+        bytes calldata _body
+    ) external returns (bytes32);
+}
+
 
 interface IMessageRecipient {
     /**

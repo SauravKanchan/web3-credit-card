@@ -34,8 +34,8 @@ export const useAccountStore = defineStore("account", {
       // Add connect to wallet here and any api calls
       this.isConnected = true;
       this.address = "0x1234567890";
-      this.balance = 9.0;
-      this.outstandingBalance = 0.0;
+      this.balance = 8.0;
+      this.outstandingBalance = 1.0;
       this.cards = [
         {
           chain: "polygon",
@@ -67,13 +67,13 @@ export const useAccountStore = defineStore("account", {
       return this.cards;
     },
     async addDeposit(amount: number) {
-      // let usdc = getUsdcContract(
-      //   "0xF9889569693D3f15A114046228627c811450E451",
-      //   // @ts-ignore
-      //   window.ethereum
-      // );
-      // let tx = await usdc.transfer(this.address, amount);
-      // await tx.wait();
+      let usdc = getUsdcContract(
+        "0xF9889569693D3f15A114046228627c811450E451",
+        // @ts-ignore
+        window.ethereum
+      );
+      let tx = await usdc.transfer(this.address, amount);
+      await tx.wait();
       if (this.balance === null) {
         this.balance = 0;
       }
@@ -102,31 +102,31 @@ export const useAccountStore = defineStore("account", {
     },
     async trustlessWithdraw(amount: number) {
       // Add deposit logic here
-      // let factory = getCreditCardFactoryContract(
-      //   "0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB",
-      //   // @ts-ignore
-      //   window.ethereum
-      // );
-      // let contract = getContract(
-      //   "0x5FbDB2315678afecb367f032d93F642f54180aa3",
-      //   // @ts-ignore
-      //   window.ethereum
-      // );
+      let factory = getCreditCardFactoryContract(
+        "0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB",
+        // @ts-ignore
+        window.ethereum
+      );
+      let contract = getContract(
+        "0x5FbDB2315678afecb367f032d93F642f54180aa3",
+        // @ts-ignore
+        window.ethereum
+      );
 
-      // let transfer = contract.interface.encodeFunctionData("transfer", [
-      //   contract.address,
-      //   amount,
-      // ]);
+      let transfer = contract.interface.encodeFunctionData("transfer", [
+        contract.address,
+        amount,
+      ]);
 
-      // let id = await contract.callStatic.submitTransaction(transfer);
-      // let tx = await contract.submitTransaction(transfer);
-      // await tx.wait();
+      let id = await contract.callStatic.submitTransaction(transfer);
+      let tx = await contract.submitTransaction(transfer);
+      await tx.wait();
 
-      // let tx2 = await factory.trustlessWithdraw(id);
-      // await tx2.wait();
-      // if (this.balance === null || this.balance < amount) {
-      //   throw new Error("Insufficient funds");
-      // }
+      let tx2 = await factory.trustlessWithdraw(id);
+      await tx2.wait();
+      if (this.balance === null || this.balance < amount) {
+        throw new Error("Insufficient funds");
+      }
       this.balance = 0;
       this.balance -= amount;
     },
