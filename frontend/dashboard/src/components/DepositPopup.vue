@@ -16,7 +16,7 @@ async function handleDeposit() {
     return;
   }
   await accountStore.addDeposit(depositAmount.value);
-  toast.success("Amount deposited successfully");
+  toast.success("Trustlessly funds withdrawn");
 }
 </script>
 

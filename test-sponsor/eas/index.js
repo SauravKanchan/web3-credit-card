@@ -76,6 +76,12 @@ const offchainAttestation = await offchain.signOffchainAttestation(
 console.log(offchainAttestation);
 
 
+
+// const attestation = await eas.getAttestation(
+//   "0x13baa5b82c579f1c9064534f727dd4a98fce85c913eff84810e5b0f8433cd21d"
+// );
+// console.log(attestation);
+
 // const attestation = await eas.getAttestation(
 //   "0x13baa5b82c579f1c9064534f727dd4a98fce85c913eff84810e5b0f8433cd21d"
 // );

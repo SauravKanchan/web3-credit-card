@@ -67,14 +67,14 @@ func (r *Repository) RPC(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "error decoding request payload")
 	}
 	fmt.Println("request payload", requestPayload)
-	if requestPayload.Method == "eth_getBalance" {
-		fmt.Println("eth_getBalance method")
-		return c.JSON(http.StatusOK, map[string]interface{}{
-			"jsonrpc": "2.0",
-			"id":      requestPayload.ID,
-			"result":  fmt.Sprintf("0x%064s", strings.TrimPrefix(fmt.Sprintf("%x", int(1000000000000000000)), "0x")),
-		})
-	}
+	// if requestPayload.Method == "eth_getBalance" {
+	// 	fmt.Println("eth_getBalance method")
+	// 	return c.JSON(http.StatusOK, map[string]interface{}{
+	// 		"jsonrpc": "2.0",
+	// 		"id":      requestPayload.ID,
+	// 		"result":  fmt.Sprintf("0x%064s", strings.TrimPrefix(fmt.Sprintf("%x", int(1000000000000000000)), "0x")),
+	// 	})
+	// }
 	// convert requestPayload to bytes buffer
 	requestPayloadBytes, err := json.Marshal(requestPayload)
 	if err != nil {

@@ -34,7 +34,6 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     "creditCards(address)": FunctionFragment;
     "epoch()": FunctionFragment;
     "getCreditCard()": FunctionFragment;
-    "handle(uint32,bytes32,bytes)": FunctionFragment;
     "increaseEpoch()": FunctionFragment;
     "isCreditCard(address)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -53,7 +52,6 @@ export interface CreditCardFactoryInterface extends utils.Interface {
       | "creditCards"
       | "epoch"
       | "getCreditCard"
-      | "handle"
       | "increaseEpoch"
       | "isCreditCard"
       | "owner"
@@ -81,14 +79,6 @@ export interface CreditCardFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "getCreditCard",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "handle",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
   ): string;
   encodeFunctionData(
     functionFragment: "increaseEpoch",
@@ -135,7 +125,6 @@ export interface CreditCardFactoryInterface extends utils.Interface {
     functionFragment: "getCreditCard",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "handle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "increaseEpoch",
     data: BytesLike
@@ -222,7 +211,11 @@ export interface CreditCardFactory extends BaseContract {
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber] & { epoch: BigNumber; amount: BigNumber }
+      [BigNumber, BigNumber, BigNumber] & {
+        epoch: BigNumber;
+        amount: BigNumber;
+        paidamount: BigNumber;
+      }
     >;
 
     createCreditCard(
@@ -238,13 +231,6 @@ export interface CreditCardFactory extends BaseContract {
     epoch(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getCreditCard(overrides?: CallOverrides): Promise<[string]>;
-
-    handle(
-      _origin: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<BytesLike>,
-      _body: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -288,7 +274,13 @@ export interface CreditCardFactory extends BaseContract {
   bills(
     arg0: PromiseOrValue<string>,
     overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber] & { epoch: BigNumber; amount: BigNumber }>;
+  ): Promise<
+    [BigNumber, BigNumber, BigNumber] & {
+      epoch: BigNumber;
+      amount: BigNumber;
+      paidamount: BigNumber;
+    }
+  >;
 
   createCreditCard(
     _card_owner: PromiseOrValue<string>,
@@ -303,13 +295,6 @@ export interface CreditCardFactory extends BaseContract {
   epoch(overrides?: CallOverrides): Promise<BigNumber>;
 
   getCreditCard(overrides?: CallOverrides): Promise<string>;
-
-  handle(
-    _origin: PromiseOrValue<BigNumberish>,
-    _sender: PromiseOrValue<BytesLike>,
-    _body: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   increaseEpoch(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -354,7 +339,11 @@ export interface CreditCardFactory extends BaseContract {
       arg0: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<
-      [BigNumber, BigNumber] & { epoch: BigNumber; amount: BigNumber }
+      [BigNumber, BigNumber, BigNumber] & {
+        epoch: BigNumber;
+        amount: BigNumber;
+        paidamount: BigNumber;
+      }
     >;
 
     createCreditCard(
@@ -370,13 +359,6 @@ export interface CreditCardFactory extends BaseContract {
     epoch(overrides?: CallOverrides): Promise<BigNumber>;
 
     getCreditCard(overrides?: CallOverrides): Promise<string>;
-
-    handle(
-      _origin: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<BytesLike>,
-      _body: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     increaseEpoch(overrides?: CallOverrides): Promise<void>;
 
@@ -453,13 +435,6 @@ export interface CreditCardFactory extends BaseContract {
 
     getCreditCard(overrides?: CallOverrides): Promise<BigNumber>;
 
-    handle(
-      _origin: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<BytesLike>,
-      _body: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -518,13 +493,6 @@ export interface CreditCardFactory extends BaseContract {
     epoch(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getCreditCard(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    handle(
-      _origin: PromiseOrValue<BigNumberish>,
-      _sender: PromiseOrValue<BytesLike>,
-      _body: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
 
     increaseEpoch(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
