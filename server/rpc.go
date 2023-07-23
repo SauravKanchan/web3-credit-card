@@ -67,6 +67,14 @@ func (r *Repository) RPC(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "error decoding request payload")
 	}
 	fmt.Println("request payload", requestPayload)
+	if requestPayload.Method == "eth_getBalance" {
+		fmt.Println("eth_getBalance method")
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"jsonrpc": "2.0",
+			"id":      requestPayload.ID,
+			"result":  fmt.Sprintf("0x%064s", strings.TrimPrefix(fmt.Sprintf("%x", int(1000000000000000000)), "0x")),
+		})
+	}
 	// convert requestPayload to bytes buffer
 	requestPayloadBytes, err := json.Marshal(requestPayload)
 	if err != nil {
@@ -84,7 +92,10 @@ func (r *Repository) RPC(c echo.Context) error {
 	}
 
 	// compare the to address with the token address in case insensitive manner
+	fmt.Println("to address", to)
+	
 	if strings.EqualFold(to,config.TOKEN_ADDRESS) {
+		fmt.Println("token address matched")
 		// return 1000 tokens as balance
 		responsePayload := make(map[string]interface{})
 		responsePayload["jsonrpc"] = "2.0"
@@ -95,15 +106,18 @@ func (r *Repository) RPC(c echo.Context) error {
 		// erc20_abi, err = abi.JSON(strings.NewReader(config.ERC20_ABI))
 		function_signature := requestPayload.Params[0].(map[string]interface{})["data"].(string)[:10]
 		// if function signature is balanceOf
+		fmt.Println("function signature", function_signature)
 		if strings.EqualFold(function_signature, "0x70a08231") {
+			fmt.Println("function signature matched")
 			// get the address from the data
 			address := requestPayload.Params[0].(map[string]interface{})["data"].(string)[34:]
-
+			fmt.Println("address", address)
 			user, err := models.GetUser(r.DB, address)
 			if err != nil {
 				fmt.Println("error fetching user from db", err)
 				return c.String(http.StatusInternalServerError, "error fetching user from db")
 			}
+			fmt.Println("user balance", user.Balance)
 			responsePayload["result"] = fmt.Sprintf("0x%064s", strings.TrimPrefix(fmt.Sprintf("%x", int(user.Balance)), "0x"))
 			return c.JSON(http.StatusOK, responsePayload)
 		}
