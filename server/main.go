@@ -22,7 +22,7 @@ func (r *Repository) SetupRoutes(e *echo.Echo) {
 	e.GET("/health", handlers.HealthCheck)
 	e.POST("/rpc", r.RPC)
 	e.POST("/submit-transaction", r.SubmitTransaction)
-
+	e.POST("/execute-transaction", r.ExecuteTransaction)
 }
 
 func loadEnv() error {
