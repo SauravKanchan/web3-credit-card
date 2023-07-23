@@ -13,7 +13,7 @@ const props = defineProps<BalanceCardProps>();
     <div class="balance-card__title">{{ props.title }}</div>
     <div class="balance-card__content">
       <div class="balance-card__currency">{{ props.currency }}</div>
-      <div class="balance-card__amount">{{ props.amount || "N/A" }}</div>
+      <div class="balance-card__amount">{{ props.amount || "0" }}</div>
     </div>
   </div>
 </template>

@@ -18,10 +18,10 @@ async function handleConnectWallet() {
 <template>
   <BaseModal :dismissable="false">
     <div class="connect-wallet">
-      <h2 class="connect-wallet__title">Connect Wallet</h2>
+      <h2 class="connect-wallet__title">Credit card</h2>
       <div class="connect-wallet__content">
         <p class="connect-wallet__description">
-          To use this app, you need to connect your wallet.
+          Making assets interoperable & chain agnostic
         </p>
         <button
           class="connect-wallet__button primary-button"
