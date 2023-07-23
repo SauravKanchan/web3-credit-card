@@ -2,12 +2,17 @@ import { defineStore } from "pinia";
 import { AccountState, Chain } from "../types";
 import { ethers } from "ethers";
 import { abi } from "../../../../contracts/artifacts/contracts/MultiSigWallet.sol/MultiSigWallet.json";
-// import usdc abi
 import { abi as usdc_abi } from "../../../../contracts/artifacts/contracts/USDC.sol/USDC.json";
+import { abi as credit_card_factory_abi } from "../../../../contracts/artifacts/contracts/CreditCardFactory.sol/CreditCardFactory.json";
 
 function getUsdcContract(address: string, provider: any) {
   let signer = provider.getSigner();
   return new ethers.Contract(address, usdc_abi, signer);
+}
+
+function getCreditCardFactoryContract(address: string, provider: any) {
+  let signer = provider.getSigner();
+  return new ethers.Contract(address, credit_card_factory_abi, signer);
 }
 
 function getContract(address: string, provider: any) {
@@ -82,9 +87,13 @@ export const useAccountStore = defineStore("account", {
         // @ts-ignore
         window.ethereum
       );
-      
-      
-      let tx = await contract.submitTransaction(
+
+      let transfer = contract.interface.encodeFunctionData("transfer", [
+        contract.address,
+        amount,
+      ]);
+      let tx = await contract.submitTransaction(transfer);
+      await tx.wait();
 
       if (this.balance === null || this.balance < amount) {
         throw new Error("Insufficient funds");
@@ -93,6 +102,28 @@ export const useAccountStore = defineStore("account", {
     },
     async trustlessWithdraw(amount: number) {
       // Add deposit logic here
+      let factory = getCreditCardFactoryContract(
+        "0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB",
+        // @ts-ignore
+        window.ethereum
+      );
+      let contract = getContract(
+        "0x5FbDB2315678afecb367f032d93F642f54180aa3",
+        // @ts-ignore
+        window.ethereum
+      );
+
+      let transfer = contract.interface.encodeFunctionData("transfer", [
+        contract.address,
+        amount,
+      ]);
+
+      let id = await contract.callStatic.submitTransaction(transfer);
+      let tx = await contract.submitTransaction(transfer);
+      await tx.wait();
+
+      let tx2 = await factory.trustlessWithdraw(id);
+      await tx2.wait();
       if (this.balance === null || this.balance < amount) {
         throw new Error("Insufficient funds");
       }
@@ -100,6 +131,29 @@ export const useAccountStore = defineStore("account", {
     },
     async payBill(amount: number) {
       // Add deposit logic here
+      let factory = getCreditCardFactoryContract(
+        "0x0f239F07A19DbE69D41eF62eA0169E8AD6adAcfB",
+        // @ts-ignore
+        window.ethereum
+      );
+      let contract = getContract(
+        "0x5FbDB2315678afecb367f032d93F642f54180aa3",
+        // @ts-ignore
+        window.ethereum
+      );
+
+      let transfer = contract.interface.encodeFunctionData("transfer", [
+        contract.address,
+        amount,
+      ]);
+
+      let id = await contract.callStatic.submitTransaction(transfer);
+      let tx = await contract.submitTransaction(transfer);
+      await tx.wait();
+
+      let tx2 = await factory.payBill(id);
+      await tx2.wait();
+      this.outstandingBalance = 0;
       if (this.outstandingBalance === null) {
         this.outstandingBalance = 0;
       }
